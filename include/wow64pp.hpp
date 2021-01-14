@@ -180,7 +180,7 @@ namespace wow64pp {
 
         constexpr static auto image_directory_entry_export = 0;
         constexpr static auto ordinal_not_found            = 0xC0000138;
-
+        /*
         typedef int(__stdcall* FARPROC)();
 
         extern "C" {
@@ -203,6 +203,12 @@ namespace wow64pp {
 
         __declspec(dllimport) FARPROC
             __stdcall GetProcAddress(void* hModule, const char* lpProcName);
+        }
+        */
+        
+        inline std::uintptr_t get_proc_address(void* hModule, const char* lpProcName)
+        {
+            return std::uintptr_t(GetProcAddress(HMODULE(hModule), lpProcName));
         }
 
         inline std::error_code get_last_error() noexcept
@@ -281,7 +287,7 @@ namespace wow64pp {
         inline F native_ntdll_function(const char* name)
         {
             const static auto ntdll_addr = native_module_handle("ntdll.dll");
-            auto f = reinterpret_cast<F>(detail::GetProcAddress(ntdll_addr, name));
+            auto f = reinterpret_cast<F>(detail::get_proc_address(ntdll_addr, name));
 
             if (f == nullptr)
                 throw_last_error("failed to get address of ntdll function");
@@ -298,7 +304,7 @@ namespace wow64pp {
                 return nullptr;
 
             const auto f =
-                reinterpret_cast<F>(detail::GetProcAddress(ntdll_addr, name));
+                reinterpret_cast<F>(detail::get_proc_address(ntdll_addr, name));
 
             if (f == nullptr)
                 ec = detail::get_last_error();
