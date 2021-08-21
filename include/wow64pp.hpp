@@ -23,9 +23,6 @@
 
 namespace wow64pp {
 
-#define NOMINMAX
-#include <Windows.h>
-    
     namespace defs {
 
         using NtQueryInformationProcessT =
@@ -854,7 +851,7 @@ namespace wow64pp {
 
         return ret;
     }
-#undef NOMINMAX
+
 } // namespace wow64pp
 
 #endif // #ifndef WOW64PP_HPP
